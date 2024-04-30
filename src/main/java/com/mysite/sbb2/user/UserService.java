@@ -1,9 +1,13 @@
 package com.mysite.sbb2.user;
 
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
+import java.util.zip.DataFormatException;
 
 @Service
 @RequiredArgsConstructor
@@ -18,5 +22,15 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(password));
         this.userRepository.save(user);
         return user;
+    }
+
+    @SneakyThrows
+    public SiteUser getUser(String username) {
+        Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
+        if (siteUser.isPresent()) {
+            return siteUser.get();
+        } else {
+            throw new DataFormatException("siteuser not found");
+        }
     }
 }
