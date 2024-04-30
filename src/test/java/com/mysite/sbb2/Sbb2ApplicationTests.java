@@ -4,6 +4,7 @@ import com.mysite.sbb2.answer.Answer;
 import com.mysite.sbb2.answer.AnswerRepository;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.question.QuestionRepository;
+import com.mysite.sbb2.question.QuestionService;
 import jakarta.transaction.Transactional;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,15 +25,24 @@ class Sbb2ApplicationTests {
 	@Autowired
 	private AnswerRepository answerRepository;
 
-	@Transactional
+	@Autowired
+	private QuestionService questionService;
+
 	@Test
 	void testJpa() {
-		Optional<Question> oq = this.questionRepository.findById(2);
-		assertTrue(oq.isPresent());
-		Question q = oq.get();
-		List<Answer> answerList = q.getAnswerList();
-		assertEquals(1, answerList.size());
-		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
+
+		for (int i = 1; i <= 300; i++) {
+			String subject = String.format("테스트 데이터입니다.:[%03d]", i);
+			String content = "내용무";
+			this.questionService.create(subject, content);
+		}
+
+//		Optional<Question> oq = this.questionRepository.findById(2);
+//		assertTrue(oq.isPresent());
+//		Question q = oq.get();
+//		List<Answer> answerList = q.getAnswerList();
+//		assertEquals(1, answerList.size());
+//		assertEquals("네 자동으로 생성됩니다.", answerList.get(0).getContent());
 
 //		Optional<Answer> oa = this.answerRepository.findById(1);
 //		assertTrue(oa.isPresent());
