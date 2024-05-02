@@ -1,5 +1,6 @@
 package com.mysite.sbb2.question;
 
+import com.mysite.sbb2.DataNotFormatException;
 import com.mysite.sbb2.user.SiteUser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -23,14 +24,12 @@ public class QuestionService {
         return this.questionRepository.findAll();
     }
 
-
-    @SneakyThrows
     public Question getQuestion(Integer id) {
         Optional<Question> question = this.questionRepository.findById(id);
         if (question.isPresent()) {
             return question.get();
         } else {
-            throw new DataFormatException("question not found");
+            throw new DataNotFormatException("question not found");
         }
     }
 
@@ -48,5 +47,16 @@ public class QuestionService {
         sorts.add(Sort.Order.desc("id"));
         Pageable pageable = PageRequest.of(page,10, Sort.by(sorts));
         return this.questionRepository.findAll(pageable);
+    }
+
+    public void modify(Question question, String subject, String content) {
+        question.setSubject(subject);
+        question.setContent(content);
+        question.setModifyDate(LocalDateTime.now());
+        this.questionRepository.save(question);
+    }
+
+    public void delete(Question question) {
+        this.questionRepository.delete(question);
     }
 }
