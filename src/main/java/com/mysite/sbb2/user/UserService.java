@@ -1,5 +1,6 @@
 package com.mysite.sbb2.user;
 
+import com.mysite.sbb2.DataNotFormatException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -24,13 +25,12 @@ public class UserService {
         return user;
     }
 
-    @SneakyThrows
     public SiteUser getUser(String username) {
         Optional<SiteUser> siteUser = this.userRepository.findByUsername(username);
         if (siteUser.isPresent()) {
             return siteUser.get();
         } else {
-            throw new DataFormatException("siteuser not found");
+            throw new DataNotFormatException("siteUser not found");
         }
     }
 }
