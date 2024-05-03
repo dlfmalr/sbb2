@@ -2,6 +2,8 @@ package com.mysite.sbb2;
 
 import com.mysite.sbb2.answer.Answer;
 import com.mysite.sbb2.answer.AnswerRepository;
+import com.mysite.sbb2.answer.AnswerService;
+import com.mysite.sbb2.comment.CommentService;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.question.QuestionRepository;
 import com.mysite.sbb2.question.QuestionService;
@@ -28,13 +30,20 @@ class Sbb2ApplicationTests {
 	@Autowired
 	private QuestionService questionService;
 
+	@Autowired
+	private AnswerService answerService;
+
+	@Autowired
+	private CommentService commentService;
+
 	@Test
 	void testJpa() {
 
-		for (int i = 1; i <= 300; i++) {
-			String subject = String.format("테스트 데이터입니다.:[%03d]", i);
-			String content = "내용무";
-			this.questionService.create(subject, content, null);
+		for (int i = 1; i <= 15; i++) {
+			Question question = this.questionService.getQuestion(908);
+			Answer answer = this.answerService.getAnswer(4);
+			String content = "댓글";
+			this.commentService.create(question, answer, content, null);
 		}
 
 //		Optional<Question> oq = this.questionRepository.findById(2);

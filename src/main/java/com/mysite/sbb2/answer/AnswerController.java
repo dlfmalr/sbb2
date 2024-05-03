@@ -1,5 +1,6 @@
 package com.mysite.sbb2.answer;
 
+import com.mysite.sbb2.comment.CommentForm;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.question.QuestionService;
 import com.mysite.sbb2.user.SiteUser;
@@ -83,5 +84,12 @@ public class AnswerController {
         SiteUser siteUser = this.userService.getUser(principal.getName());
         this.answerService.vote(answer, siteUser);
         return String.format("redirect:/question/detail/%s#answer_%s", answer.getQuestion().getId(), answer.getId());
+    }
+
+    @GetMapping("/detail/{id}")
+    public String detail(Model model, @PathVariable("id") Integer id, CommentForm commentForm) {
+        Answer answer = this.answerService.getAnswer(id);
+        model.addAttribute("answer", answer);
+        return "answer_detail";
     }
 }

@@ -1,43 +1,37 @@
-package com.mysite.sbb2.question;
+package com.mysite.sbb2.comment;
 
 import com.mysite.sbb2.answer.Answer;
-import com.mysite.sbb2.comment.Comment;
+import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.user.SiteUser;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Getter
 @Setter
-public class Question {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(length = 200)
-    private String subject;
-
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createDate;
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private List<Answer> answerList;
-
-    @OneToMany(mappedBy = "question", cascade = CascadeType.REMOVE)
-    private List<Comment> commentList;
-
+    @ManyToOne
+    private Question question;
+    @ManyToOne
+    private Answer answer;
     @ManyToOne
     private SiteUser author;
 
-    private LocalDateTime modifyDate;
+    private LocalDateTime createDate;
 
     @ManyToMany
     Set<SiteUser> voter;
+
+    private LocalDateTime modifyDate;
 }
