@@ -5,6 +5,9 @@ import com.mysite.sbb2.answer.Answer;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -48,5 +51,10 @@ public class CommentService {
     public void vote(Comment comment, SiteUser siteUser) {
         comment.getVoter().add(siteUser);
         this.commentRepository.save(comment);
+    }
+
+    public Page<Comment> getCommentPage(Answer answer, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return this.commentRepository.findAllByAnswer(answer, pageable);
     }
 }

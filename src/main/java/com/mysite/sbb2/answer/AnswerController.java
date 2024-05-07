@@ -1,12 +1,15 @@
 package com.mysite.sbb2.answer;
 
+import com.mysite.sbb2.comment.Comment;
 import com.mysite.sbb2.comment.CommentForm;
+import com.mysite.sbb2.comment.CommentService;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.question.QuestionService;
 import com.mysite.sbb2.user.SiteUser;
 import com.mysite.sbb2.user.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.parameters.P;
@@ -25,6 +28,7 @@ public class AnswerController {
     private final QuestionService questionService;
     private final AnswerService answerService;
     private final UserService userService;
+    private final CommentService commentService;
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/create/{id}")
@@ -87,9 +91,12 @@ public class AnswerController {
     }
 
     @GetMapping("/detail/{id}")
-    public String detail(Model model, @PathVariable("id") Integer id, CommentForm commentForm) {
+    public String detail(Model model, @PathVariable("id") Integer id, CommentForm commentForm,
+                         @RequestParam(defaultValue = "0") int page) {
         Answer answer = this.answerService.getAnswer(id);
+        Page<Comment> paging = this.commentService.getCommentPage(answer, page);
         model.addAttribute("answer", answer);
+        model.addAttribute("paging", paging);
         return "answer_detail";
     }
 }
