@@ -4,6 +4,9 @@ import com.mysite.sbb2.DataNotFormatException;
 import com.mysite.sbb2.question.Question;
 import com.mysite.sbb2.user.SiteUser;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -50,5 +53,8 @@ public class AnswerService {
         this.answerRepository.save(answer);
     }
 
-//    public
+    public Page<Answer> getAnswerPage(Question question, int page) {
+        Pageable pageable = PageRequest.of(page, 10);
+        return this.answerRepository.findAllByQuestion(question, pageable);
+    }
 }

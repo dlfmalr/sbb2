@@ -51,21 +51,16 @@ public class CommentController {
     @GetMapping("/modify/{id}")
     public String commentModify(CommentForm commentForm, @PathVariable("id") Integer id, Principal principal) {
         Comment comment = this.commentService.getComment(id);
-
-        if (comment.getAuthor() == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "작성자 정보가 없습니다.");
-        }
-        if (!comment.getAuthor().getUsername().equals(principal.getName())) {
+        if(!comment.getAuthor().getUsername().equals(principal.getName())) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         commentForm.setContent(comment.getContent());
         return "comment_form";
     }
-
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify/{id}")
     public String commentModify(@Valid CommentForm commentForm, BindingResult bindingResult,
-                                @PathVariable("id") Integer id, Principal principal) {
+                               @PathVariable("id") Integer id, Principal principal) {
         if (bindingResult.hasErrors()) {
             return "comment_form";
         }
@@ -74,7 +69,7 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "수정권한이 없습니다.");
         }
         this.commentService.modify(comment, commentForm.getContent());
-        return String.format("redirect:/answer/detail/%s#comment_%s", comment.getAnswer().getId(), comment.getId());
+        return String.format("redirect:/answer/detail/%s", comment.getAnswer().getId());
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -85,6 +80,15 @@ public class CommentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "삭제권한이 없습니다.");
         }
         this.commentService.delete(comment);
+        return String.format("redirect:/answer/detail/%s", comment.getAnswer().getId());
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/vote/{id}")
+    public String commentVote(Principal principal, @PathVariable("id") Integer id) {
+        Comment comment = this.commentService.getComment(id);
+        SiteUser siteUser = this.userService.getUser(principal.getName());
+        this.commentService.vote(comment, siteUser);
         return String.format("redirect:/answer/detail/%s", comment.getAnswer().getId());
     }
 }
