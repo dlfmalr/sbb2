@@ -54,7 +54,7 @@ public class CommentService {
     }
 
     public Page<Comment> getCommentPage(Answer answer, int page) {
-        Pageable pageable = PageRequest.of(page, 10);
+        Pageable pageable = PageRequest.of(page, 5);
         return this.commentRepository.findAllByAnswer(answer, pageable);
     }
 }
